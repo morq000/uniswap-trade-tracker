@@ -64,31 +64,22 @@ export const getWalletV3Swaps = gql`
             where: { origin: $origin, timestamp_gt: $timestamp_gt}
         ) {
             id
-            # timestamp of transaction
             timestamp
-            # allow indexing by tokens
             token0 {
                 id
                 symbol
                 decimals
             }
-            # allow indexing by tokens
             token1 {
                 id
                 symbol
                 decimals
             }
-            # sender of the swap
             sender
-            # recipient of the swap
             recipient
-            # txn origin
             origin
-            # delta of token0 swapped
             amount0
-            # delta of token1 swapped
             amount1
-            # derived info
             amountUSD
         }
     }
