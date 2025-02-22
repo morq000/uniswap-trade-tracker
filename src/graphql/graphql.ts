@@ -2,6 +2,56 @@ import { gql, GraphQLClient } from "graphql-request";
 import "dotenv/config";
 import { GRAPH_URL_UNI_V3, CHAIN_ID, GRAPH_URL_UNI_V2 } from "../config";
 
+// Интерфейс для токена
+export interface Token {
+  id: string;
+  symbol: string;
+  decimals: string;
+}
+
+// Интерфейс для пары токенов
+export interface Pair {
+  token0: Token;
+  token1: Token;
+}
+
+// Интерфейс для свопа
+export interface V3Swap {
+  amount0: string;
+  amount1: string;
+  amountUSD: string;
+  id: string;
+  origin: string;
+  recipient: string;
+  sender: string;
+  timestamp: string;
+  token0: Token;
+  token1: Token;
+}
+
+// Интерфейс для свопа
+export interface V2Swap {
+  id: string;
+  timestamp: string;
+  from: string;
+  pair: Pair;
+  amount0In: string;
+  amount1In: string;
+  amount0Out: string;
+  amount1Out: string;
+  amountUSD: string;
+}
+
+// Интерфейс для ответа, содержащего массив свопов
+export interface V3SwapsResponse {
+  swaps: V3Swap[];
+}
+
+// Интерфейс для ответа GraphQL-запроса
+export interface V2SwapsResponse {
+  swaps: V2Swap[];
+}
+
 export const graphQlV3Client = new GraphQLClient(GRAPH_URL_UNI_V3);
 export const graphQlV2Client = new GraphQLClient(GRAPH_URL_UNI_V2);
 
