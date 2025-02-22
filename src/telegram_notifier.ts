@@ -16,6 +16,11 @@ const teleBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, {
   polling: true,
 });
 
-export const sendTelegramMessage = (message: string) => {
-  return teleBot.sendMessage(process.env.TELEGRAM_CHAT_ID!, message);
+export const sendTelegramMessage = async (message: string) => {
+  try {
+    await teleBot.sendMessage(process.env.TELEGRAM_CHAT_ID!, message);
+  }
+  catch(error) {
+    console.log(`Ошибка при отправке Telegram сообщения: ${error}`);
+  }
 };
