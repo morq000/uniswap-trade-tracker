@@ -5,7 +5,7 @@ import { startWalletMonitoring } from "./wallet_listener";
 const main = async () => {
   console.log('Запуск приложения...');
   try {
-    sendTelegramMessage('🚀 Запуск UniswapWalletTracker!');
+    await sendTelegramMessage('🚀 Запуск UniswapWalletTracker!');
     console.log('✅ Приложение успешно запущено');
     await startWalletMonitoring();
   } catch (error) {
