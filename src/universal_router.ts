@@ -72,15 +72,18 @@ export const executeTrade = async (
         });
         const receipt = await tx.wait();
         if (receipt.status == 1) {
-            sendTelegramMessage(
-                `Swap успешно выполнен: ${tokenIn.symbol} -> ${tokenOut.symbol}`
+            await sendTelegramMessage(
+                `Swap успешно выполнен: ${tokenIn.symbol} -> ${tokenOut.symbol}.\nTX hash: ${receipt.transactionHash}`
             );
+            return true;
         } else {
-            sendTelegramMessage(
+            await sendTelegramMessage(
                 `Ошибка при выполнении swap: ${tokenIn.symbol} -> ${tokenOut.symbol}. TX hash: ${receipt.transactionHash}`
             );
+            return false;
         }
     } catch (error) {
         console.log("Swap error: ", error);
+        return false;
     }
 };
