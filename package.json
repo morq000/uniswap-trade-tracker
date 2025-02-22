@@ -20,7 +20,16 @@
         "typescript": "^5.7.3"
     },
     "dependencies": {
+        "@types/big.js": "^6.2.2",
+        "@uniswap/router-sdk": "^1.23.0",
+        "@uniswap/sdk-core": "^7.6.0",
+        "@uniswap/smart-order-router": "^4.18.2",
+        "@uniswap/universal-router-sdk": "^4.19.0",
+        "@uniswap/v2-sdk": "^4.14.0",
+        "@uniswap/v3-sdk": "^3.24.1",
+        "big.js": "^6.2.2",
         "dotenv": "^16.4.7",
+        "ethers": "^5.7.2",
         "graphql": "^16.10.0",
         "graphql-request": "^7.1.2",
         "node-telegram-bot-api": "^0.66.0"
