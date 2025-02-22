@@ -1,7 +1,5 @@
-// import { ethers } from 'ethers';
 import "dotenv/config";
 import { CHAIN_ID, CHAIN_NAMES, TARGET_WALLET_ADDRESS } from "./config";
-// import { provider } from './utils/web3Provider';
 import { sendTelegramMessage } from "./telegram_notifier";
 import {
     graphQlV3Client,
@@ -13,9 +11,8 @@ import {
     V3Swap,
     V2Swap,
 } from "./graphql/graphql";
+import { addToQueue } from "./queueManager";
 
-// // Временное хранилище для транзакций
-const transactionPool: (V3Swap | V2Swap)[] = [];
 let lastTimestamp = Math.floor(Date.now() / 1000); // Текущее время в секундах //1738273319//
 
 // Функция мониторинга
@@ -34,7 +31,6 @@ export const startWalletMonitoring = async () => {
                     timestamp_gt: lastTimestamp,
                 }
             );
-
             // Запрос свопов из V2
             const v2Result = await graphQlV2Client.request<V2SwapsResponse>(
                 getWalletv2Swaps,
@@ -43,7 +39,6 @@ export const startWalletMonitoring = async () => {
                     timestamp_gt: lastTimestamp,
                 }
             );
-
             // Объединение результатов
             const allSwaps = [...v3Result.swaps, ...v2Result.swaps];
             console.log("New swaps: ", allSwaps);
@@ -53,21 +48,11 @@ export const startWalletMonitoring = async () => {
                 allSwaps.sort(
                     (a, b) => parseInt(a.timestamp) - parseInt(b.timestamp)
                 );
-
-                // Добавление новых свопов в пул транзакций
-                transactionPool.push(...allSwaps);
-                console.log("TX pool: ", transactionPool);
                 // Обновление lastTimestamp на временную метку последнего свопа
                 lastTimestamp = parseInt(
                     allSwaps[allSwaps.length - 1].timestamp
                 );
-
-                // Обработка новых свопов (например, отправка уведомлений)
-                for (const swap of allSwaps) {
-                    await sendTelegramMessage(
-                        `Новый своп: ${JSON.stringify(swap)}`
-                    );
-                }
+                allSwaps.forEach((swap) => addToQueue(swap));
             } else {
                 // Если новых свопов нет, обновляем lastTimestamp на текущее время
                 lastTimestamp = Math.floor(Date.now() / 1000);
@@ -78,11 +63,3 @@ export const startWalletMonitoring = async () => {
         }
     }, 10000);
 };
-
-// // Функция для обработки транзакций из хранилища
-// const processTransactions = async () => {
-//   while (transactionPool.length > 0) {
-//     const tx = transactionPool.shift();
-
-//   }
-// };
