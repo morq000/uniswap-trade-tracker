@@ -7,6 +7,7 @@ import {
     SLIPPAGE_PERCENT,
     DEADLINE,
     MAX_DUPE_BUY,
+    BASE_CURRENCIES,
 } from "./config.js";
 import { sendTelegramMessage } from "./telegram_notifier.js";
 import {
@@ -32,6 +33,7 @@ export const startWalletMonitoring = async () => {
         - Докупать монету максимум ${MAX_DUPE_BUY} раз(а)
         - Дедлайн транзакции: ${DEADLINE} секунд
         - Проскальзывание: ${Number(SLIPPAGE_PERCENT.toFixed())}%
+        - Пропуск создания позиции, если оба актива в паре: \n${BASE_CURRENCIES}
         `
     );
     // Основная петля приложения

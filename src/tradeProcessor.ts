@@ -9,6 +9,7 @@ import {
     ABORT_IF_STATS_FAIL,
     MAX_DUPE_BUY,
     WETH_ADDRESS,
+    BASE_CURRENCIES
 } from "./config.js";
 import {
     calcBuyPercent,
@@ -30,6 +31,11 @@ export const processTrade = async (swap: V2Swap | V3Swap) => {
         let sendNativeEther = false;
         const { tokenIn, tokenOut, amountIn, tokenInPrice, tokenOutPrice } =
             processData(swap);
+        // Если оба токена в позиции - базовые, то не открывать такую позицию
+        if (tokenIn.symbol && tokenOut.symbol && tokenIn.symbol in BASE_CURRENCIES && tokenOut.symbol in BASE_CURRENCIES) {
+            console.log(`Пропуск создания позиции по базовым активам: ${tokenIn.symbol}/${tokenOut.symbol}`);
+            return;
+        }
         const processedData = await processPositions(
             tokenIn,
             amountIn,
