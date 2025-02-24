@@ -8,12 +8,10 @@ import {
     getWalletv2Swaps,
     V2SwapsResponse,
     V3SwapsResponse,
-    V3Swap,
-    V2Swap,
 } from "./graphql/graphql";
 import { addToQueue } from "./queueManager";
 
-let lastTimestamp = Math.floor(Date.now() / 1000); // Текущее время в секундах //1738273319//
+let lastTimestamp = Math.floor(Date.now() / 1000); // Текущее время в секундах
 
 // Функция мониторинга
 export const startWalletMonitoring = async () => {
@@ -23,22 +21,33 @@ export const startWalletMonitoring = async () => {
     // Основная петля приложения
     setInterval(async () => {
         try {
+            let v3Result: V3SwapsResponse = { swaps: [] };
+            let v2Result: V2SwapsResponse = { swaps: [] };
             // Запрос свопов из V3
-            const v3Result = await graphQlV3Client.request<V3SwapsResponse>(
-                getWalletV3Swaps,
-                {
-                    origin: TARGET_WALLET_ADDRESS,
-                    timestamp_gt: lastTimestamp,
-                }
-            );
-            // Запрос свопов из V2
-            const v2Result = await graphQlV2Client.request<V2SwapsResponse>(
-                getWalletv2Swaps,
-                {
-                    from: TARGET_WALLET_ADDRESS,
-                    timestamp_gt: lastTimestamp,
-                }
-            );
+            try {
+                v3Result = await graphQlV3Client.request<V3SwapsResponse>(
+                    getWalletV3Swaps,
+                    {
+                        origin: TARGET_WALLET_ADDRESS,
+                        timestamp_gt: lastTimestamp,
+                    }
+                );
+            } catch (error) {
+                console.log(`Ошибка получения свопов из V3 subgraph`);
+            }
+            try {
+                // Запрос свопов из V2
+                v2Result = await graphQlV2Client.request<V2SwapsResponse>(
+                    getWalletv2Swaps,
+                    {
+                        from: TARGET_WALLET_ADDRESS,
+                        timestamp_gt: lastTimestamp,
+                    }
+                );
+            } catch (error) {
+                console.log(`Ошибка получения свопов из V2 subgraph`);
+            }
+
             // Объединение результатов
             const allSwaps = [...v3Result.swaps, ...v2Result.swaps];
             console.log("New swaps: ", allSwaps);
