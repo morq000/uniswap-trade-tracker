@@ -6,6 +6,9 @@
         "DEADLINE": "300",
         "PORTFOLIO_FILE_PATH": "./portfolio.json",
         "SLIPPAGE": "500",
-        "ABORT_IF_STATS_FAIL": true
+        "ABORT_IF_STATS_FAIL": true,
+        "BASE_CURRENCIES": [
+            "USDT", "USDC", "DAI", "WETH"
+        ]
     }
 }
