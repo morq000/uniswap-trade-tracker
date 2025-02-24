@@ -12,9 +12,7 @@ import {
     SLIPPAGE_PERCENT,
     UNISWAP_ROUTERS,
 } from "./config";
-import {
-    UniversalRouterVersion,
-} from "@uniswap/universal-router-sdk";
+import { UniversalRouterVersion } from "@uniswap/universal-router-sdk";
 import {
     AlphaRouter,
     SwapType,
@@ -30,40 +28,47 @@ const router = new AlphaRouter({
 });
 
 const ETHER = Ether.onChain(CHAIN_ID);
-
+const slippage = new Percent(SLIPPAGE_PERCENT, 10_000);
 const swapOptionsUniversalRouter: SwapOptionsUniversalRouter = {
-    recipient: TARGET_WALLET_ADDRESS,
-    slippageTolerance: new Percent(SLIPPAGE_PERCENT, 10_000),
+    recipient: signer.address,
+    slippageTolerance: slippage,
     type: SwapType.UNIVERSAL_ROUTER,
-    version: UniversalRouterVersion.V2_0, // ???
+    version: UniversalRouterVersion.V1_2, // Убедиться что версия нужная ???
 };
 
 export const executeTrade = async (
     tokenIn: Token,
     amountIn: BigintIsh,
-    tokenOut: Token
+    tokenOut: Token,
+    sendNativeEther: boolean,
+    receiveNativeEther: boolean
 ) => {
     const route = await router.route(
-        CurrencyAmount.fromRawAmount(tokenIn, amountIn),
-        tokenOut,
+        sendNativeEther ? CurrencyAmount.fromRawAmount(ETHER, amountIn) : CurrencyAmount.fromRawAmount(tokenIn, amountIn),
+        receiveNativeEther ? ETHER : tokenOut,
         TradeType.EXACT_INPUT,
         swapOptionsUniversalRouter
     );
+    // console.log('Route: ', JSON.stringify(route, null, 2));
     if (!route || !route.methodParameters) {
         throw new Error(
             `Failed to get route. Params: ${tokenIn}, ${tokenOut}, ${amountIn}`
         );
     }
-    const approveSuccess = await makeTokenApprove(
-        tokenIn.address,
-        UNISWAP_ROUTERS[CHAIN_ID]["universalRouter"],
-        signer
-    );
-    if (!approveSuccess) {
-        throw new Error(
-            `Ошибка при попытке аппрува токена ${tokenIn.symbol} для адреса ${UNISWAP_ROUTERS[CHAIN_ID]["universalRouter"]}.`
+    if (!sendNativeEther) {
+        const approveSuccess = await makeTokenApprove(
+            tokenIn.address,
+            UNISWAP_ROUTERS[CHAIN_ID]["universalRouter"],
+            signer,
+            BigInt(amountIn.toString())
         );
+        if (!approveSuccess) {
+            throw new Error(
+                `Ошибка при попытке аппрува токена ${tokenIn.symbol} для адреса ${UNISWAP_ROUTERS[CHAIN_ID]["universalRouter"]}.`
+            );
+        }
     }
+
     try {
         const tx = await signer.sendTransaction({
             data: route.methodParameters.calldata,
@@ -73,17 +78,17 @@ export const executeTrade = async (
         const receipt = await tx.wait();
         if (receipt.status == 1) {
             await sendTelegramMessage(
-                `Swap успешно выполнен: ${tokenIn.symbol} -> ${tokenOut.symbol}.\nTX hash: ${receipt.transactionHash}`
+                `Обмен успешно выполнен: ${tokenIn.symbol} -> ${tokenOut.symbol}.\nTX hash: ${receipt.transactionHash}`
             );
-            return true;
+            return receipt;
         } else {
             await sendTelegramMessage(
-                `Ошибка при выполнении swap: ${tokenIn.symbol} -> ${tokenOut.symbol}. TX hash: ${receipt.transactionHash}`
+                `Ошибка при выполнении обмена: ${tokenIn.symbol} -> ${tokenOut.symbol}. TX hash: ${receipt.transactionHash}`
             );
-            return false;
+            return receipt;
         }
     } catch (error) {
         console.log("Swap error: ", error);
-        return false;
+        return undefined;
     }
 };
