@@ -4,8 +4,8 @@ import 'dotenv/config';
 // Настройки бота//
 ///////////////////
 // Кошелек, за которым следим
-export const TARGET_WALLET_ADDRESS =
-  '0x08e390762f64ABA6F9F9269589e1A702623e90F1'; // test wallet
+export const TARGET_WALLET_ADDRESS = //"0x0263B02de6b6BF2750E2F9cFecaaeE9878FE1998" // тоже какой-то интересный поц
+'0x08e390762f64ABA6F9F9269589e1A702623e90F1'; // test wallet
 //'0xF0948D9E11C81FaAA0EdC54022Bf53Ff513163B0';
 // Макс количество повторных покупок
 export const MAX_DUPE_BUY = 3;
@@ -15,6 +15,11 @@ export const COPY_BUY_PERCENT: string = '10'; // 10 = 10%
 export const DEADLINE = 5 * 60; // 5 минут
 // Адрес файла для хранения портфолио (по умолчанию корень приложения)
 export const PORTFOLIO_FILE_PATH = './portfolio.json';
+// Проскальзывание
+export const SLIPPAGE_PERCENT = 500; // делитель 10_000, т.е. 50 это 0.005
+// Останавливаем ли мы сделку, если не можем сформировать для нее статистику по какой-то причине
+// например, не пришел Symbol одного токена
+export const ABORT_IF_STATS_FAIL = true;
 
 ////////////////////////
 // Системные настройки//
@@ -23,7 +28,7 @@ export const PORTFOLIO_FILE_PATH = './portfolio.json';
 export const FETCH_PRICE_API_RETRIES = 3;
 
 // Идентификатор сети: Ethereum Mainnet = 1; Ethereum sepolia testnet = 11155111;
-export const CHAIN_ID = 11155111;
+export const CHAIN_ID = 1;//11155111;
 
 // Subgraph IDs
 export const UNI_V3_SUBGRAPH_ID = {
@@ -33,13 +38,11 @@ export const UNI_V3_SUBGRAPH_ID = {
 
 export const UNI_V2_SUBGRAPH_ID = {
     1: 'EYCKATKGBKLWvSfwvBjzfCBmGwYNdVkduYXVivCsLRFu',
-    11155111: 'EYCKATKGBKLWvSfwvBjzfCBmGwYNdVkduYXVivCsLRFu'
+    11155111: '' // no subgraph for V2 in sepolia
 }
 
 // The Graph API 
 export const GRAPH_URL_UNI_V3 = `https://gateway.thegraph.com/api/${process.env.GRAPH_API_TOKEN}/subgraphs/id/${UNI_V3_SUBGRAPH_ID[CHAIN_ID]}`;
-
-//
 export const GRAPH_URL_UNI_V2 = `https://gateway.thegraph.com/api/${process.env.GRAPH_API_TOKEN}/subgraphs/id/${UNI_V2_SUBGRAPH_ID[CHAIN_ID]}`;
 
 // Адреса Flashbots RPC для защиты от MEV
@@ -86,52 +89,3 @@ export const CHAIN_NAMES = {
   1: 'Ethereum Mainnet',
   11155111: 'Ethereum Sepolia testnet',
 };
-
-// export const FUNCTION_SIGNATURES = {
-//   v2: [
-//     '0x38ed1739',
-//     '0x8803dbee',
-//     '0x7ff36ab5',
-//     '0x4a25d94a',
-//     '0x18cbafe5',
-//     '0xfb3bdb41',
-//     '0x5c11d795',
-//     '0xb6f9de95',
-//     '0x791ac947',
-//   ],
-//   v3: [
-//     '0x414bf389',
-//     '0xc04b8d59',
-//     '0xdb3e2198',
-//     '0xf28c0498',
-//     '0x5ae401dc',
-//     '0x1f0464d1',
-//   ],
-//   multicall: ['0x5ae401dc', '0x1f0464d1'],
-
-// };
-
-// // Человекочитаемые названия фукнций, копирование которых поддерживает приложение
-// export const FUNCTION_NAMES: { [key: string]: string } = {
-//   '0x38ed1739': 'V2: Обмен фикс. кол-ва токенов на токены',
-//   '0x8803dbee': 'V2: Обмен токенов на фикс. кол-во токенов',
-//   '0x7ff36ab5': 'V2: Обмен фикс. кол-ва ETH на токены',
-//   '0x4a25d94a': 'V2: Обмен токенов на фикс. кол-во ETH',
-//   '0x18cbafe5': 'V2: Обмен фикс. кол-ва токенов на ETH',
-//   '0xfb3bdb41': 'V2: Обмен ETH на фикс. кол-во токенов',
-//   '0x5c11d795':
-//     'V2: Обмен фикс. кол-ва токенов на токены с поддержкой сбора комиссии',
-//   '0xb6f9de95':
-//     'V2: Обмен фикс. кол-ва ETH на токены с поддержкой сбора комиссии',
-//   '0x791ac947':
-//     'V2: Обмен фикс. кол-ва токенов на ETH с поддержкой сбора комиссии',
-//   '0x414bf389': 'V3 Обмен фикс. кол-ва токенов на токены по одному пути',
-//   '0xc04b8d59': 'V3 Обмен фикс. кол-ва токенов на токены',
-//   '0xdb3e2198': 'V3 Обмен токенов на фикс. кол-во токенов по одному пути',
-//   '0xf28c0498': 'V3 Обмен токенов на фикс. кол-во токенов',
-//   '0x5ae401dc': 'V3: Multicall обмен',
-//   '0x1f0464d1': 'V3: Multicall обмен',
-// };
-
-// Список стейблов, относительно которых действие считается покупкой или продажей
-export const STABLE_COINS = ['USDT', 'USDC', 'DAI'];
