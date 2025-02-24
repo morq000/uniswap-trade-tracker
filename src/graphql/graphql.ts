@@ -1,6 +1,6 @@
 import { gql, GraphQLClient } from "graphql-request";
 import "dotenv/config";
-import { GRAPH_URL_UNI_V3, CHAIN_ID, GRAPH_URL_UNI_V2 } from "../config";
+import { GRAPH_URL_UNI_V3, CHAIN_ID, GRAPH_URL_UNI_V2 } from "../config.js";
 
 // Интерфейс для токена
 export interface Token {

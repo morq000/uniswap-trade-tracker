@@ -1,7 +1,7 @@
 // queueManager.ts
 import PQueue from 'p-queue';
-import { V3Swap, V2Swap } from './graphql/graphql';
-import { processTrade } from './tradeProcessor';
+import { V3Swap, V2Swap } from './graphql/graphql.js';
+import { processTrade } from './tradeProcessor.js';
 
 // Создаем очередь с ограничением на 1 одновременную задачу
 const queue = new PQueue({ concurrency: 1 });

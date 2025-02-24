@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { sendTelegramMessage } from './telegram_notifier';
-import { startWalletMonitoring } from "./wallet_listener";
+import { sendTelegramMessage } from './telegram_notifier.js';
+import { startWalletMonitoring } from "./wallet_listener.js";
 
 const main = async () => {
   console.log('Запуск приложения...');

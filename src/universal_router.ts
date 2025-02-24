@@ -11,16 +11,16 @@ import {
     TARGET_WALLET_ADDRESS,
     SLIPPAGE_PERCENT,
     UNISWAP_ROUTERS,
-} from "./config";
+} from "./config.js";
 import { UniversalRouterVersion } from "@uniswap/universal-router-sdk";
 import {
     AlphaRouter,
     SwapType,
     SwapOptionsUniversalRouter,
 } from "@uniswap/smart-order-router";
-import { provider, signer } from "./web3Provider";
-import { makeTokenApprove } from "./utils";
-import { sendTelegramMessage } from "./telegram_notifier";
+import { provider, signer } from "./web3Provider.js";
+import { makeTokenApprove } from "./utils.js";
+import { sendTelegramMessage } from "./telegram_notifier.js";
 
 const router = new AlphaRouter({
     chainId: CHAIN_ID,
@@ -28,7 +28,7 @@ const router = new AlphaRouter({
 });
 
 const ETHER = Ether.onChain(CHAIN_ID);
-const slippage = new Percent(SLIPPAGE_PERCENT, 10_000);
+const slippage = SLIPPAGE_PERCENT;
 const swapOptionsUniversalRouter: SwapOptionsUniversalRouter = {
     recipient: signer.address,
     slippageTolerance: slippage,

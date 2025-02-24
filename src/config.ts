@@ -1,25 +1,27 @@
 import 'dotenv/config';
+import { Percent } from '@uniswap/sdk-core';
+import CONFIG from '../user_config.json' with { type: 'json'};
+
 
 ///////////////////
 // Настройки бота//
 ///////////////////
+const USER_CONFIG = CONFIG.USER_CONFIG;
 // Кошелек, за которым следим
-export const TARGET_WALLET_ADDRESS = //"0x0263B02de6b6BF2750E2F9cFecaaeE9878FE1998" // тоже какой-то интересный поц
-'0x08e390762f64ABA6F9F9269589e1A702623e90F1'; // test wallet
-//'0xF0948D9E11C81FaAA0EdC54022Bf53Ff513163B0';
+export const TARGET_WALLET_ADDRESS = USER_CONFIG.TARGET_WALLET_ADDRESS;
 // Макс количество повторных покупок
-export const MAX_DUPE_BUY = 3;
+export const MAX_DUPE_BUY = Number(USER_CONFIG.MAX_DUPE_BUY);
 // Делать покупку на процент от покупки таргета
-export const COPY_BUY_PERCENT: string = '10'; // 10 = 10%
+export const COPY_BUY_PERCENT: string = USER_CONFIG.COPY_BUY_PERCENT; // 10 = 10%
 // Дедлайн для транзакции покупки/продажи
-export const DEADLINE = 5 * 60; // 5 минут
+export const DEADLINE = Number(USER_CONFIG.DEADLINE);
 // Адрес файла для хранения портфолио (по умолчанию корень приложения)
-export const PORTFOLIO_FILE_PATH = './portfolio.json';
+export const PORTFOLIO_FILE_PATH = USER_CONFIG.PORTFOLIO_FILE_PATH;
 // Проскальзывание
-export const SLIPPAGE_PERCENT = 500; // делитель 10_000, т.е. 50 это 0.005
+export const SLIPPAGE_PERCENT = new Percent(Number(USER_CONFIG.SLIPPAGE), 10_000); // делитель 10_000, т.е. 50 это 0.005
 // Останавливаем ли мы сделку, если не можем сформировать для нее статистику по какой-то причине
 // например, не пришел Symbol одного токена
-export const ABORT_IF_STATS_FAIL = true;
+export const ABORT_IF_STATS_FAIL = USER_CONFIG.ABORT_IF_STATS_FAIL;
 
 ////////////////////////
 // Системные настройки//

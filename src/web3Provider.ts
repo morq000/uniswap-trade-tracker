@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import 'dotenv/config';
-import { INFURA_RPC, FLASHBOTS_RPC, CHAIN_ID } from './config';
+import { INFURA_RPC, FLASHBOTS_RPC, CHAIN_ID } from './config.js';
 // import { FlashbotsBundleProvider } from '@flashbots/ethers-provider-bundle';
 
 // Проверка наличия приватника в .env файле

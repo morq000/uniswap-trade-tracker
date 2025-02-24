@@ -6,9 +6,8 @@ import {
     TARGET_WALLET_ADDRESS,
     WETH_ADDRESS,
     CHAIN_ID,
-} from "./config";
-import { IERC20 } from "./abi/IERC20";
-import { Token } from "@uniswap/sdk-core";
+} from "./config.js";
+import { IERC20 } from "./abi/IERC20.js";
 
 export const generateDeadline = (): number => {
     const currentTimestamp = Math.floor(Date.now() / 1000);

@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import fs from "fs";
 import Big from "big.js";
-import { PORTFOLIO_FILE_PATH, FETCH_PRICE_API_RETRIES } from "./config";
+import { PORTFOLIO_FILE_PATH, FETCH_PRICE_API_RETRIES } from "./config.js";
 
 interface Transaction {
     id: string;

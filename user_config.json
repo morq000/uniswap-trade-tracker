@@ -1,0 +1,11 @@
+{
+    "USER_CONFIG": {
+        "TARGET_WALLET_ADDRESS": "0xF0948D9E11C81FaAA0EdC54022Bf53Ff513163B0",
+        "MAX_DUPE_BUY": "3",
+        "COPY_BUY_PERCENT": "10",
+        "DEADLINE": "300",
+        "PORTFOLIO_FILE_PATH": "./portfolio.json",
+        "SLIPPAGE": "500",
+        "ABORT_IF_STATS_FAIL": true
+    }
+}

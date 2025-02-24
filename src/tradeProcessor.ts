@@ -1,23 +1,23 @@
 import { ethers, BigNumber } from "ethers";
 import Big from "big.js";
 import { BigintIsh, Token } from "@uniswap/sdk-core";
-import { V2Swap, V3Swap } from "./graphql/graphql";
-import { sendTelegramMessage } from "./telegram_notifier";
-import { executeTrade } from "./universal_router";
+import { V2Swap, V3Swap } from "./graphql/graphql.js";
+import { sendTelegramMessage } from "./telegram_notifier.js";
+import { executeTrade } from "./universal_router.js";
 import {
     CHAIN_ID,
     ABORT_IF_STATS_FAIL,
     MAX_DUPE_BUY,
     WETH_ADDRESS,
-} from "./config";
+} from "./config.js";
 import {
     calcBuyPercent,
     calcSellPercent,
     getCurrencyBalance,
     getPriceInUSD,
-} from "./utils";
-import { getOpenPositions, processTransactionStats } from "./statsEngine";
-import { provider, signer } from "./web3Provider";
+} from "./utils.js";
+import { getOpenPositions, processTransactionStats } from "./statsEngine.js";
+import { provider, signer } from "./web3Provider.js";
 
 interface ProcessedSwapParams {
     shouldSwap: boolean;

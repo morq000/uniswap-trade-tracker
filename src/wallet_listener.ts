@@ -1,6 +1,14 @@
 import "dotenv/config";
-import { CHAIN_ID, CHAIN_NAMES, TARGET_WALLET_ADDRESS } from "./config";
-import { sendTelegramMessage } from "./telegram_notifier";
+import {
+    CHAIN_ID,
+    CHAIN_NAMES,
+    TARGET_WALLET_ADDRESS,
+    COPY_BUY_PERCENT,
+    SLIPPAGE_PERCENT,
+    DEADLINE,
+    MAX_DUPE_BUY,
+} from "./config.js";
+import { sendTelegramMessage } from "./telegram_notifier.js";
 import {
     graphQlV3Client,
     graphQlV2Client,
@@ -8,15 +16,23 @@ import {
     getWalletv2Swaps,
     V2SwapsResponse,
     V3SwapsResponse,
-} from "./graphql/graphql";
-import { addToQueue } from "./queueManager";
+} from "./graphql/graphql.js";
+import { addToQueue } from "./queueManager.js";
 
 let lastTimestamp = Math.floor(Date.now() / 1000); // Текущее время в секундах
 
 // Функция мониторинга
 export const startWalletMonitoring = async () => {
     await sendTelegramMessage(
-        `Начало мониторинга кошелька ${TARGET_WALLET_ADDRESS} в сети ${CHAIN_NAMES[CHAIN_ID]}`
+        `Начало мониторинга кошелька ${TARGET_WALLET_ADDRESS} в сети ${
+            CHAIN_NAMES[CHAIN_ID]
+        }\n
+        --- Настройки ---\n
+        - Покупать на ${COPY_BUY_PERCENT}% от размера оригинальной покупки
+        - Докупать монету максимум ${MAX_DUPE_BUY} раз(а)
+        - Дедлайн транзакции: ${DEADLINE} секунд
+        - Проскальзывание: ${Number(SLIPPAGE_PERCENT.toFixed())}%
+        `
     );
     // Основная петля приложения
     setInterval(async () => {
