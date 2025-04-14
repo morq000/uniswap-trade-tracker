@@ -51,7 +51,7 @@ export const startWalletMonitoring = async () => {
                     }
                 );
             } catch (error) {
-                console.log(`Ошибка получения свопов из V3 subgraph`);
+                console.log(`Ошибка получения свопов из V3 subgraph: ${error}`);
             }
             try {
                 // Запрос свопов из V2
@@ -63,7 +63,7 @@ export const startWalletMonitoring = async () => {
                     }
                 );
             } catch (error) {
-                console.log(`Ошибка получения свопов из V2 subgraph`);
+                console.log(`Ошибка получения свопов из V2 subgraph: ${error}`);
             }
 
             // Объединение результатов

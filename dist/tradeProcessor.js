@@ -2,7 +2,7 @@ import { ethers, BigNumber } from "ethers";
 import { Token } from "@uniswap/sdk-core";
 import { sendTelegramMessage } from "./telegram_notifier.js";
 import { executeTrade } from "./universal_router.js";
-import { CHAIN_ID, ABORT_IF_STATS_FAIL, MAX_DUPE_BUY, WETH_ADDRESS, } from "./config.js";
+import { CHAIN_ID, ABORT_IF_STATS_FAIL, MAX_DUPE_BUY, WETH_ADDRESS, BASE_CURRENCIES } from "./config.js";
 import { calcBuyPercent, calcSellPercent, getCurrencyBalance, getPriceInUSD, } from "./utils.js";
 import { getOpenPositions, processTransactionStats } from "./statsEngine.js";
 import { provider, signer } from "./web3Provider.js";
@@ -10,6 +10,11 @@ export const processTrade = async (swap) => {
     try {
         let sendNativeEther = false;
         const { tokenIn, tokenOut, amountIn, tokenInPrice, tokenOutPrice } = processData(swap);
+        // Если оба токена в позиции - базовые, то не открывать такую позицию
+        if (tokenIn.symbol && tokenOut.symbol && tokenIn.symbol in BASE_CURRENCIES && tokenOut.symbol in BASE_CURRENCIES) {
+            console.log(`Пропуск создания позиции по базовым активам: ${tokenIn.symbol}/${tokenOut.symbol}`);
+            return;
+        }
         const processedData = await processPositions(tokenIn, amountIn, tokenOut);
         if (processedData.description)
             await sendTelegramMessage(`Новый своп: ${processedData.description}`);

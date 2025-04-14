@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { CHAIN_ID, CHAIN_NAMES, TARGET_WALLET_ADDRESS, COPY_BUY_PERCENT, SLIPPAGE_PERCENT, DEADLINE, MAX_DUPE_BUY, } from "./config.js";
+import { CHAIN_ID, CHAIN_NAMES, TARGET_WALLET_ADDRESS, COPY_BUY_PERCENT, SLIPPAGE_PERCENT, DEADLINE, MAX_DUPE_BUY, BASE_CURRENCIES, } from "./config.js";
 import { sendTelegramMessage } from "./telegram_notifier.js";
 import { graphQlV3Client, graphQlV2Client, getWalletV3Swaps, getWalletv2Swaps, } from "./graphql/graphql.js";
 import { addToQueue } from "./queueManager.js";
@@ -12,6 +12,7 @@ export const startWalletMonitoring = async () => {
         - Докупать монету максимум ${MAX_DUPE_BUY} раз(а)
         - Дедлайн транзакции: ${DEADLINE} секунд
         - Проскальзывание: ${Number(SLIPPAGE_PERCENT.toFixed())}%
+        - Пропуск создания позиции, если оба актива в паре: \n${BASE_CURRENCIES}
         `);
     // Основная петля приложения
     setInterval(async () => {
@@ -26,7 +27,7 @@ export const startWalletMonitoring = async () => {
                 });
             }
             catch (error) {
-                console.log(`Ошибка получения свопов из V3 subgraph`);
+                console.log(`Ошибка получения свопов из V3 subgraph: ${error}`);
             }
             try {
                 // Запрос свопов из V2
@@ -36,7 +37,7 @@ export const startWalletMonitoring = async () => {
                 });
             }
             catch (error) {
-                console.log(`Ошибка получения свопов из V2 subgraph`);
+                console.log(`Ошибка получения свопов из V2 subgraph: ${error}`);
             }
             // Объединение результатов
             const allSwaps = [...v3Result.swaps, ...v2Result.swaps];
